@@ -7,6 +7,9 @@
         @if(Session::has('message'))
             <div class="alert alert-success">{{Session::get('message')}}</div>
         @endif
+            @if(Session::has('error'))
+                <div class="alert alert-danger">{{Session::get('error')}}</div>
+            @endif
             <form action="{{route('question.store')}}" method="POST" enctype="multipart/form-data">@csrf
                 <div class="module">
                     <div class="module-head">
@@ -48,7 +51,7 @@
                             <br><br>
 
 				            <label class="control-lable" for="options">Options</label>
-				                <div class="controls"> 
+				                <div class="controls">
                                     @for($i=0;$i<4;$i++)
                                         <input type="text" name="options[]" class="span7 @error('name') border-red @enderror" placeholder=" options{{$i+1}}" required="" ><br>
                                         <input type="file" name="options-img[]" class="span8"><br>
@@ -64,14 +67,14 @@
                                     <span class="invalid-feedback" role="alert">
                                         <strong>{{ $message }}</strong>
                                     </span>
-                                    @enderror     
+                                    @enderror
                                     @error('options-img')
                                     <span class="invalid-feedback" role="alert">
                                         <strong>{{ $message }}</strong>
                                     </span>
-                                    @enderror           
+                                    @enderror
                                 </div>
-            
+
                             <br>
                             <div class="controls">
                                 <button type="submit" class="btn btn-success">Submit</button>

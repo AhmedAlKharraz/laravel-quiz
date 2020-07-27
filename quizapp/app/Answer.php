@@ -20,7 +20,7 @@ class Answer extends Model
 
     public function storeAnswer($data, $question){
 
-        foreach($data['options'] as $key=>$option){
+        /* foreach($data['options'] as $key=>$option){
             $is_correct = false;
             if($key == $data['correct_answer']){
                 $is_correct = true;
@@ -38,6 +38,37 @@ class Answer extends Model
             'answer'=>$option,
             'background'=>$imageName,
             'is_correct'=>$is_correct
-        ]);
+        ]); */
+
+
+        $imageName = $data['options-img'];
+        if($data->hasFile('options-img')){
+            foreach($data['options-img'] as $key => $image)
+            {
+                $is_correct = false;
+                if($key == $data['correct_answer']){
+                    $is_correct = true;
+                }
+                $imageName = time(). '.' .$image->getClientOriginalExtension();
+                $destinationPath = public_path('/question_images');
+                $image->move($destinationPath, $imageName);
+                $answer = \App\Answer::create([
+                    'question_id'=>$question->id,
+                    'answer'=>$data['options'][$key],
+                    'background'=>$imageName,
+                    'is_correct'=>$is_correct
+                ]);
+            }
+        }
     }
+
+    public function updateAnswer($data,$question){
+        $this->deleteAnswer($question->id);
+        $this->storeAnswer($data,$question);
+    }
+
+    public function deleteAnswer($questionId){
+        Answer::where('question_id',$questionId)->delete();
+    }
+
 }
